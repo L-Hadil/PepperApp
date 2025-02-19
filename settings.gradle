@@ -1,0 +1,23 @@
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        maven {
+            url 'https://qisdk.softbankrobotics.com/sdk/maven'
+        }
+    }
+}
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.PREFER_PROJECT)
+    repositories {
+        google()
+        mavenCentral()
+        maven {
+            url 'https://qisdk.softbankrobotics.com/sdk/maven'
+        }
+    }
+}
+
+rootProject.name = "My_Application_for_pepper"
+include ':app'
