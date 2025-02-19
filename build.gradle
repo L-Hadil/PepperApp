@@ -1,11 +1,14 @@
 buildscript {
-    ext.kotlin_version = "1.9.21" // Mise à jour de Kotlin
+    ext.kotlin_version = "1.5.10" // Version stable compatible avec QiSDK
+
     repositories {
         google()
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.1.1' // Plugin Android Gradle récent
+        // Plugin Android Gradle (compatible avec Gradle 6.x)
+        classpath "com.android.tools.build:gradle:4.2.2"
+        // Plugin Kotlin
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -14,9 +17,8 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        maven {
-            url 'https://qisdk.softbankrobotics.com/sdk/maven'
-        }
+        // Dépôt nécessaire pour récupérer QiSDK
+        maven { url 'https://qisdk.softbankrobotics.com/sdk/maven' }
     }
 }
 

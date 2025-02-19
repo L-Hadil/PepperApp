@@ -1,3 +1,5 @@
+// Fichier : settings.gradle
+
 pluginManagement {
     repositories {
         google()
@@ -9,7 +11,8 @@ pluginManagement {
 }
 
 dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.PREFER_PROJECT)
+    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS) // Permet d'utiliser les dépôts du settings.gradle
+
     repositories {
         google()
         mavenCentral()
