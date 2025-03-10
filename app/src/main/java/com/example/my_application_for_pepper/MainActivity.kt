@@ -116,6 +116,11 @@ class MainActivity : RobotActivity(), RobotLifecycleCallbacks {
     }
 }
 */
+
+
+//texte en fr
+
+/*
 package com.example.my_application_for_pepper
 
 import android.os.Bundle
@@ -235,6 +240,196 @@ class MainActivity : RobotActivity(), RobotLifecycleCallbacks {
             } catch (e: Exception) {
                 e.printStackTrace()
             }
+        }
+    }
+}
+*/
+
+//le capteur tete marhce
+
+/*
+package com.example.my_application_for_pepper
+
+import android.os.Bundle
+import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
+import com.aldebaran.qi.sdk.QiSDK
+import com.aldebaran.qi.sdk.RobotLifecycleCallbacks
+import com.aldebaran.qi.sdk.QiContext
+import com.aldebaran.qi.sdk.`object`.conversation.Say
+import com.aldebaran.qi.sdk.builder.SayBuilder
+// Imports pour la localisation QiSDK (attention aux backticks pour le package "object")
+import com.aldebaran.qi.sdk.`object`.locale.Locale
+import com.aldebaran.qi.sdk.`object`.locale.Language
+import com.aldebaran.qi.sdk.`object`.locale.Region
+// Imports pour le capteur tactile via l'API TouchSensor
+import com.aldebaran.qi.sdk.`object`.touch.Touch
+import com.aldebaran.qi.sdk.`object`.touch.TouchSensor
+import com.aldebaran.qi.sdk.`object`.touch.TouchState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import com.example.my_application_for_pepper.R
+
+class MainActivity : AppCompatActivity(), RobotLifecycleCallbacks {
+
+    private var qiContext: QiContext? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        // Vous pouvez utiliser votre layout habituel (ici activity_main)
+        setContentView(R.layout.activity_main)
+        QiSDK.register(this, this)
+    }
+
+    override fun onDestroy() {
+        QiSDK.unregister(this, this)
+        super.onDestroy()
+    }
+
+    override fun onRobotFocusGained(qiContext: QiContext) {
+        this.qiContext = qiContext
+        Log.d("MainActivity", "Focus acquis par le robot")
+        testTouchSensor(qiContext)
+    }
+
+    override fun onRobotFocusLost() {
+        qiContext = null
+    }
+
+    override fun onRobotFocusRefused(reason: String) {
+        qiContext = null
+    }
+
+    /**
+     * Récupère le TouchSensor "Head/Touch" et ajoute un listener.
+     * Lorsque le capteur détecte un toucher, Pepper dit :
+     * "Vous avez touché ma tête ! Merci beaucoup !"
+     */
+    private fun testTouchSensor(qiContext: QiContext) {
+        try {
+            // Récupérer l'instance Touch qui contient tous les capteurs tactiles
+            val touch: Touch = qiContext.touch
+            // Récupérer le capteur tactile de la tête
+            val touchSensor: TouchSensor = touch.getSensor("Head/Touch")
+            touchSensor.addOnStateChangedListener { touchState: TouchState ->
+                if (touchState.touched) {
+                    Log.d("MainActivity", "Head/Touch détecté à ${touchState.time}")
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val say: Say = SayBuilder.with(qiContext)
+                            .withText("Vous avez touché ma tête ! Merci beaucoup !")
+                            .withLocale(Locale(Language.FRENCH, Region.FRANCE))
+                            .build()
+                        say.run()
+                    }
+                } else {
+                    Log.d("MainActivity", "Capteur relâché à ${touchState.time}")
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Erreur lors de la récupération du capteur tactile : ${e.message}")
+        }
+    }
+}
+*/
+
+// capteur main fonction super
+
+
+package com.example.my_application_for_pepper
+
+import android.os.Bundle
+import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
+import com.aldebaran.qi.sdk.QiSDK
+import com.aldebaran.qi.sdk.RobotLifecycleCallbacks
+import com.aldebaran.qi.sdk.QiContext
+import com.aldebaran.qi.sdk.`object`.conversation.Say
+import com.aldebaran.qi.sdk.builder.SayBuilder
+// Imports pour la localisation QiSDK (attention aux backticks pour le package "object")
+import com.aldebaran.qi.sdk.`object`.locale.Locale
+import com.aldebaran.qi.sdk.`object`.locale.Language
+import com.aldebaran.qi.sdk.`object`.locale.Region
+// Imports pour le service tactile
+import com.aldebaran.qi.sdk.`object`.touch.Touch
+import com.aldebaran.qi.sdk.`object`.touch.TouchSensor
+import com.aldebaran.qi.sdk.`object`.touch.TouchState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+
+class MainActivity : AppCompatActivity(), RobotLifecycleCallbacks {
+
+    companion object {
+        private const val TAG = "MainActivity"
+    }
+
+    // Stocker les capteurs tactiles que nous souhaitons écouter
+    private val touchSensors = mutableListOf<TouchSensor>()
+    private var qiContext: QiContext? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        // Utilisez un layout minimal (par exemple activity_main.xml)
+        setContentView(R.layout.activity_main)
+        QiSDK.register(this, this)
+    }
+
+    override fun onDestroy() {
+        QiSDK.unregister(this, this)
+        super.onDestroy()
+    }
+
+    override fun onRobotFocusGained(qiContext: QiContext) {
+        this.qiContext = qiContext
+        Log.d(TAG, "Focus acquis par le robot")
+        setupTouchSensors(qiContext)
+    }
+
+    override fun onRobotFocusLost() {
+        // Retirer tous les listeners
+        touchSensors.forEach { it.removeAllOnStateChangedListeners() }
+        touchSensors.clear()
+        qiContext = null
+    }
+
+    override fun onRobotFocusRefused(reason: String) {
+        qiContext = null
+    }
+
+    /**
+     * Configure les capteurs tactiles pour la tête, la main gauche et la main droite.
+     * Lorsqu'un capteur est activé, Pepper répond de façon professionnelle.
+     */
+    private fun setupTouchSensors(qiContext: QiContext) {
+        try {
+            val touch: Touch = qiContext.touch
+            // Liste des noms de capteurs à surveiller
+            val sensorNames = listOf("Head/Touch", "LHand/Touch", "RHand/Touch")
+            sensorNames.forEach { sensorName ->
+                val sensor: TouchSensor = touch.getSensor(sensorName)
+                // Stocker le capteur pour pouvoir retirer le listener plus tard
+                touchSensors.add(sensor)
+                sensor.addOnStateChangedListener { touchState: TouchState ->
+                    val state = if (touchState.touched) "touched" else "released"
+                    Log.i(TAG, "Sensor $sensorName $state at ${touchState.time}")
+                    if (touchState.touched) {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            try {
+                                val say: Say = SayBuilder.with(qiContext)
+                                    .withText("Interaction détectée sur le capteur $sensorName. bravo.")
+                                    .withLocale(Locale(Language.FRENCH, Region.FRANCE))
+                                    .build()
+                                say.run()
+                            } catch (e: Exception) {
+                                Log.e(TAG, "Erreur lors de la réponse vocale : ${e.message}")
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Erreur lors de la configuration des capteurs tactiles : ${e.message}")
         }
     }
 }
