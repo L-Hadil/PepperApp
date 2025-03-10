@@ -1,15 +1,17 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
-    ext.kotlin_version = "1.5.10" // Version stable compatible avec QiSDK
-
+    ext.kotlin_version = "1.5.10"
     repositories {
         google()
         mavenCentral()
+        // jcenter() // Remove or comment out this line
     }
     dependencies {
-        // Plugin Android Gradle (compatible avec Gradle 6.x)
         classpath "com.android.tools.build:gradle:4.2.2"
-        // Plugin Kotlin
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
     }
 }
 
@@ -17,8 +19,10 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        // Dépôt nécessaire pour récupérer QiSDK
-        maven { url 'https://qisdk.softbankrobotics.com/sdk/maven' }
+        // jcenter() // Remove or comment out this line
+        maven {
+            url 'https://qisdk.softbankrobotics.com/sdk/maven'
+        }
     }
 }
 
