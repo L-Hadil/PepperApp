@@ -120,7 +120,7 @@ class MainActivity : RobotActivity(), RobotLifecycleCallbacks {
 
 //texte en fr
 
-/*
+
 package com.example.my_application_for_pepper
 
 import android.os.Bundle
@@ -243,7 +243,6 @@ class MainActivity : RobotActivity(), RobotLifecycleCallbacks {
         }
     }
 }
-*/
 
 //le capteur tete marhce
 
@@ -331,7 +330,11 @@ class MainActivity : AppCompatActivity(), RobotLifecycleCallbacks {
         }
     }
 }
+
 */
+
+
+/*
 
 // capteur main fonction super
 
@@ -433,3 +436,4 @@ class MainActivity : AppCompatActivity(), RobotLifecycleCallbacks {
         }
     }
 }
+*/
