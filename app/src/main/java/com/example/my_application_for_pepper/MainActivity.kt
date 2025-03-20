@@ -119,11 +119,13 @@ class MainActivity : RobotActivity(), RobotLifecycleCallbacks {
 
 
 //texte en fr
-
-
 package com.example.my_application_for_pepper
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.aldebaran.qi.sdk.QiContext
 import com.aldebaran.qi.sdk.QiSDK
 import com.aldebaran.qi.sdk.RobotLifecycleCallbacks
@@ -136,8 +138,6 @@ import com.aldebaran.qi.sdk.builder.SayBuilder
 import com.aldebaran.qi.sdk.design.activity.RobotActivity
 import kotlinx.coroutines.*
 import kotlin.random.Random
-
-// Import avec backticks pour le package "object"
 import com.aldebaran.qi.sdk.`object`.locale.Locale
 import com.aldebaran.qi.sdk.`object`.locale.Language
 import com.aldebaran.qi.sdk.`object`.locale.Region
@@ -147,6 +147,18 @@ class MainActivity : RobotActivity(), RobotLifecycleCallbacks {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         QiSDK.register(this, this)
+        checkStoragePermission()
+    }
+
+    private fun checkStoragePermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                100
+            )
+        }
     }
 
     override fun onDestroy() {
@@ -155,23 +167,14 @@ class MainActivity : RobotActivity(), RobotLifecycleCallbacks {
     }
 
     override fun onRobotFocusGained(qiContext: QiContext) {
-        // Lancer l’histoire interactive avec animations
         CoroutineScope(Dispatchers.IO).launch {
             interactiveStory(qiContext)
         }
     }
 
-    override fun onRobotFocusLost() {
-        // À implémenter si besoin
-    }
+    override fun onRobotFocusLost() {}
+    override fun onRobotFocusRefused(reason: String) {}
 
-    override fun onRobotFocusRefused(reason: String) {
-        // Gestion en cas de refus du focus
-    }
-
-    /**
-     * Fait parler Pepper en français, joue des animations aléatoires et pose des questions aux enfants.
-     */
     private suspend fun interactiveStory(qiContext: QiContext) = withContext(Dispatchers.IO) {
         val storyLines = listOf(
             "Bonjour les enfants ! Bienvenue dans notre incroyable aventure ! Êtes-vous prêts ?",
@@ -187,7 +190,6 @@ class MainActivity : RobotActivity(), RobotLifecycleCallbacks {
             "Merci d'avoir écouté mon histoire ! L'avez-vous aimée ?"
         )
 
-        // Liste des animations disponibles
         val animationsPaths = listOf(
             "animations/Attract_L01.qianim",
             "animations/Attract_L02.qianim",
@@ -209,16 +211,13 @@ class MainActivity : RobotActivity(), RobotLifecycleCallbacks {
 
         for (text in storyLines) {
             try {
-                // Sélection aléatoire d'une animation
                 val randomAnimPath = animationsPaths[Random.nextInt(animationsPaths.size)]
 
-                // Création du texte à dire en français
                 val say: Say = SayBuilder.with(qiContext)
                     .withText(text)
-                    .withLocale(Locale(Language.FRENCH, Region.FRANCE)) // Utilisation de la Locale QiSDK
+                    .withLocale(Locale(Language.FRENCH, Region.FRANCE))
                     .build()
 
-                // Création de l’animation aléatoire
                 val animation: Animation = AnimationBuilder.with(qiContext)
                     .withAssets(randomAnimPath)
                     .build()
@@ -227,22 +226,19 @@ class MainActivity : RobotActivity(), RobotLifecycleCallbacks {
                     .withAnimation(animation)
                     .build()
 
-                // Exécution en parallèle
                 val sayJob = async { say.run() }
                 val animateJob = async { animate.run() }
 
                 sayJob.await()
                 animateJob.await()
-
-                // Petite pause après chaque phrase pour plus d’interaction
                 delay(2000)
-
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
 }
+
 
 //le capteur tete marhce
 
