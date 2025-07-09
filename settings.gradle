@@ -1,5 +1,3 @@
-// Fichier : settings.gradle
-
 pluginManagement {
     repositories {
         google()
@@ -22,5 +20,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "My_Application_for_pepper"
+rootProject.name = "My_Application_for_pepper" //adaptez selon votre app
 include ':app'

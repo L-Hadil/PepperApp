@@ -8,7 +8,7 @@ android {
     buildToolsVersion "32.0.0"
 
     defaultConfig {
-        applicationId "com.example.my_application_for_pepper"
+        applicationId "com.example.my_application_for_pepper" //adaptez selon votre app
         minSdkVersion 23
         targetSdkVersion 32
         versionCode 1
